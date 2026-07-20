@@ -1,70 +1,56 @@
-# Kimi Auto Paste & Retry (extensão para Firefox)
+# Kimi Auto Paste & Retry
 
-Extensão que, quando ativada em `kimi.com`:
-1. Verifica se o campo de prompt está vazio.
-2. Se estiver, cola o conteúdo da área de transferência (Ctrl+V).
-3. Clica no botão de enviar.
-4. Se aparecer o popup de "você está na fila", fecha o popup.
-5. Verifica se o texto colado ainda está no campo; se não estiver, cola de novo e repete.
+This is a homemade Firefox extension, built for one specific annoyance: on kimi.com, when the servers are busy, a popup shows up saying there are a lot of people talking to Kimi right now and suggesting you subscribe to a paid plan for priority access. If you just want to keep retrying until your message actually gets through, clicking through that manually every time gets old fast. This extension does that for you.
 
-## ⚠️ Antes de usar
+Here's the short version: you copy some text, turn the extension on, it pastes that text into Kimi's prompt field and sends it. If the queue warning shows up, it closes the warning on its own and tries sending again, repeating that until the message actually goes through (or until you turn it off).
 
-Isso automatiza reenvios repetidos contra o sistema de fila do site. Isso
-provavelmente entra em conflito com os termos de uso do Kimi (a fila existe
-para controlar a carga do servidor de forma justa entre os usuários). Use por
-sua conta e risco, com um intervalo razoável entre tentativas (já vem
-configurado para 2 segundos, não recomendo diminuir).
+## A heads-up before you install this
 
-## Passo 1 — Ajustar os seletores (obrigatório)
+This is an automation that keeps hammering a queue system that exists specifically to manage load on the site. That probably doesn't sit well with Kimi's terms of service. I'm not saying this to talk you out of using it, just so you know that side of it exists and can use your own judgment — it's not worth leaving this running all day for no reason, and it's not a good idea to push the retry interval too low.
 
-Os seletores de CSS variam conforme o HTML real do site, que muda com
-atualizações do Kimi. Abra `content.js` e ajuste o bloco `CONFIG` no topo:
+## What's in the folder
 
-1. Abra `kimi.com`, clique com o botão direito no **campo de texto do
-   prompt** → **Inspecionar**. No painel que abrir, veja a tag (`textarea`
-   ou `div`) e as classes/atributos dela. Coloque isso em `PROMPT_SELECTOR`.
-   Exemplo: se o elemento for `<textarea class="chat-input-xyz">`, use
-   `PROMPT_SELECTOR: 'textarea.chat-input-xyz'`.
+- manifest.json — the config file that tells Firefox what this extension is
+- content.js — the script that actually runs inside the Kimi page and does the work
+- popup.html and popup.js — the small window that opens when you click the extension icon, with the on/off button
 
-2. Faça o mesmo com o **botão de enviar** (geralmente um ícone de seta) →
-   `SEND_BUTTON_SELECTOR`.
+## Installing it
 
-3. Force o popup de fila a aparecer (mande várias mensagens seguidas até
-   ele surgir), clique direito **no próprio popup** (na área ao redor, não
-   no texto) → Inspecionar, e pegue a classe/atributo do container →
-   `QUEUE_POPUP_SELECTOR`.
+Firefox won't let you install extensions like this one permanently without going through Mozilla's official store, so this one loads as a temporary extension. It works completely fine, it just needs to be reloaded every time you close and reopen Firefox.
 
-4. Dentro desse popup, clique direito no **botão de fechar (X)** →
-   Inspecionar → `POPUP_CLOSE_BUTTON_SELECTOR`.
+1. Extract this folder somewhere on your computer, like your Desktop.
+2. Open Firefox and type this into the address bar: about:debugging#/runtime/this-firefox
+3. Click "Load Temporary Add-on..."
+4. Select the manifest.json file inside the folder.
+5. That's it — the extension shows up in the list, and its icon becomes available in the browser toolbar (if you don't see it, click the puzzle-piece icon next to the address bar and pin the extension from there).
 
-Dica: no painel do Inspecionar, clique com o botão direito no elemento
-destacado em HTML e escolha "Copiar" → "Copiar seletor" para o Firefox
-gerar um seletor CSS pronto — só colar direto na constante.
+If you want it installed permanently, without reloading it every time, your options are using Firefox Developer Edition or Firefox Nightly and disabling the signature requirement in about:config, or submitting the extension to Mozilla as "unlisted" so it gets signed.
 
-## Passo 2 — Carregar a extensão no Firefox
+## Using it
 
-1. Abra `about:debugging#/runtime/this-firefox`.
-2. Clique em **"Carregar extensão temporária"**.
-3. Selecione o arquivo `manifest.json` desta pasta.
-4. A extensão vai aparecer na barra de ferramentas (ícone de peça de
-   quebra-cabeça, se não tiver ícone fixo mostre as extensões ocultas).
+1. Go to kimi.com and copy (Ctrl+C) the text you want to send.
+2. Click the extension icon in the toolbar.
+3. Click "Ativar" (Activate).
+4. Leave the tab open. The extension will paste the text, send it, and if it hits the queue warning, close the warning and try again on its own every two seconds until it gets through.
+5. Once the message actually sends and the warning stops showing up, the extension stops touching the field on its own, so it doesn't risk sending the same message twice.
+6. If you want to send another prompt afterward, copy the new text and turn the extension off and back on — that resets its cycle.
 
-> Extensão "temporária" some quando o Firefox fecha. Para instalar de forma
-> permanente sem passar pela loja da Mozilla, você precisa do Firefox
-> Developer Edition ou Nightly com a opção
-> `xpinstall.signatures.required` desativada em `about:config`, ou então
-> submeter a extensão como "unlisted" em addons.mozilla.org para assinatura.
+## If something's not working
 
-## Passo 3 — Usar
+By far the most common issue is the extension running an outdated version of the script in a tab that was already open. Any time you edit content.js or reload the extension in about:debugging, you also need to refresh (F5) the Kimi tab that was already open, otherwise it keeps running the old code and it'll look like nothing is happening.
 
-1. Vá para `kimi.com` e copie o texto que quer enviar (Ctrl+C).
-2. Clique no ícone da extensão e depois em **"Ativar"**.
-3. Deixe a aba aberta. O script vai colar e tentar enviar sozinho, e repetir
-   automaticamente sempre que aparecer o aviso de fila.
-4. Clique em **"Desativar"** no popup da extensão quando terminar.
+If it still doesn't work after refreshing the tab, open the browser console on the Kimi tab (F12, Console tab) before clicking "Ativar". You should see a line like this show up:
 
-## Estrutura dos arquivos
+    [Kimi Auto Paste] Ativado.
 
-- `manifest.json` — configuração da extensão (Manifest V3).
-- `content.js` — lógica principal (colar, enviar, detectar/fechar popup).
-- `popup.html` / `popup.js` — botão de ativar/desativar.
+And then, every two seconds, a log line saying what the extension is finding (or not finding) on the page — whether it found the text field, the send button, and the queue popup. Those logs exist specifically to make it easier to figure out where things are getting stuck — if one of the selectors stops matching the site (Kimi could change its HTML in a future update), that's where you'll see it.
+
+## About the selectors
+
+The selectors currently in use (defined at the top of content.js, inside the CONFIG object) were found by inspecting kimi.com by hand:
+
+- The prompt field is either a textarea or a div with contenteditable.
+- The send button isn't a real button, it's a div with the class send-button-container, which gets the class disabled when it can't be clicked.
+- The queue warning shows up as a div with the class modal-container, and the button that dismisses it without pushing you toward a subscription is the one with the class km-button-secondary (its label is "Entendi").
+
+If Kimi updates the site and these selectors stop matching, just repeat the process of inspecting the element (right-click it, Inspect, then right-click the highlighted HTML and copy the CSS selector) and update the corresponding value in CONFIG.
