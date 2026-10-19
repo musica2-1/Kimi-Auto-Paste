@@ -9,7 +9,7 @@ Quando ativada em `kimi.ai`:
 6. Cada ação (colar, enviar, fechar popup) tem uma pausa configurável no popup (padrão 5 s).
 7. Desativa sozinha ao atingir o máximo de tentativas, definido no popup da extensão (padrão 100; 0 = sem limite).
 
-> Aviso: automatizar reenvios contra a fila pode violar os termos de uso do Kimi. Use por sua conta e risco; não reduza as pausas.
+> Aviso: automatizar reenvios contra a fila pode violar os termos de uso do Kimi. Use por sua conta e risco.
 
 ## Seletores (bloco `CONFIG` em content.js)
 
