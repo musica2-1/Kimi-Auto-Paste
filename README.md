@@ -1,4 +1,4 @@
-# Kimi Auto Paste & Retry (Firefox)
+# Kimi Auto Paste(Firefox)
 
 Quando ativada em `kimi.ai`:
 1. Se o campo de prompt estiver vazio, cola o conteúdo da área de transferência.
