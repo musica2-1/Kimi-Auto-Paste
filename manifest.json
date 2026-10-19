@@ -1,13 +1,13 @@
 {
   "manifest_version": 3,
   "name": "Kimi Auto Paste & Retry",
-  "version": "1.0",
+  "version": "1.2",
   "description": "Cola automaticamente o conteúdo da área de transferência no campo de prompt do Kimi e reenvia caso apareça o aviso de fila de espera.",
   "permissions": ["clipboardRead", "storage"],
-  "host_permissions": ["*://*.kimi.com/*"],
+  "host_permissions": ["*://*.kimi.ai/*"],
   "content_scripts": [
     {
-      "matches": ["*://*.kimi.com/*"],
+      "matches": ["*://*.kimi.ai/*"],
       "js": ["content.js"],
       "run_at": "document_idle"
     }
@@ -19,7 +19,7 @@
   "browser_specific_settings": {
     "gecko": {
       "id": "kimi-auto-paste@local.ext",
-      "strict_min_version": "109.0"
+      "strict_min_version": "125.0"
     }
   }
 }

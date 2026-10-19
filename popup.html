@@ -27,6 +27,26 @@
     button.active {
       background: #d9363e;
     }
+    .field {
+      margin-top: 12px;
+      font-size: 12px;
+      color: #333;
+      text-align: left;
+    }
+    .field input {
+      width: 100%;
+      box-sizing: border-box;
+      margin-top: 4px;
+      padding: 6px;
+      font-size: 14px;
+      border: 1px solid #bbb;
+      border-radius: 6px;
+    }
+    .hint {
+      font-size: 11px;
+      color: #777;
+      margin-top: 3px;
+    }
     #status {
       margin-top: 10px;
       font-size: 12px;
@@ -37,7 +57,15 @@
 <body>
   <h1>Kimi Auto Paste & Retry</h1>
   <button id="toggle">Ativar</button>
+  <label class="field">Pausa entre ações (segundos)
+    <input type="number" id="delay" min="1" step="1" value="5" />
+  </label>
+  <label class="field">Máx. de tentativas
+    <input type="number" id="max" min="0" step="1" value="100" />
+    <div class="hint">0 = sem limite</div>
+  </label>
   <p id="status">Desativado</p>
+  <p class="hint" id="version"></p>
   <script src="popup.js"></script>
 </body>
 </html>
